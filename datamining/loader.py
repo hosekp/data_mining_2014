@@ -28,10 +28,10 @@ if __name__ == '__main__':
     pass
 
 def loadMoleculesFromChEMBL(arr,accession):
-    #address="http://www.ebi.ac.uk/chemblws/targets/"+accession+"/bioactivities.json"
+    address="http://www.ebi.ac.uk/chemblws/targets/"+accession+"/bioactivities.json"
     #print(address)
-    #jsonn=urllib2.urlopen(address).read()
-    jsonn=open("./data/"+accession+".json").read()
+    jsonn=urllib2.urlopen(address).read()
+    #jsonn=open("./data/"+accession+".json").read()
     return json.loads(jsonn)[u'bioactivities']
 def readMoleculesFromMol2(arr,address):
     file1=open(address,"r")
@@ -55,11 +55,10 @@ def getRDMolFromChEMBL(arr,params):
     return arr
         #return self.RDMol
 def getSmilesFromChEMBL(cid):
-    #string=urllib2.urlopen("http://www.ebi.ac.uk/chemblws/compounds/"+cid+".json").read()
-    string="http://www.ebi.ac.uk/chemblws/compounds/"+cid+".json"
-    print(string)
+    string=urllib2.urlopen("http://www.ebi.ac.uk/chemblws/compounds/"+cid+".json").read()
+    #string="http://www.ebi.ac.uk/chemblws/compounds/"+cid+".json"
+    #print(string)
     #print string
-    #bigjson=json.loads(string)
-    #smalljson=bigjson["compound"]
-    #return str(smalljson["smiles"])
-    return string
+    bigjson=json.loads(string)
+    smalljson=bigjson["compound"]
+    return str(smalljson["smiles"])
