@@ -30,3 +30,11 @@ class Molecule(object):
         self.RDMol=line.RDMol
         self.activity=line.activity
         self.pIC = line.pIC
+    def __getitem__(self, key):
+        return self.__dict__[key]
+ 
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+ 
+    def __delitem__(self, key):
+        del self.__dict__[key]

@@ -15,24 +15,31 @@ nodenetwork={
     1:Node("loadChembl",loader.loadMoleculesFromChEMBL,params="CHEMBL206"),
     2:Node("filterByActivity",filters.filterByActivity,need=[1]),
     7:Node("addActivityChEMBL",utils.addValue,params={"activity":1},need=[2]),
+    11:Node("filterKeysChEMBL",filters.filterKeys,params=["id","pIC","activity"],need=[7]),
+    12:Node("getRDMolFromChEMBL",loader.getRDMolFromChEMBL,need=[11]),
+    
     3:Node("readMoleculesLigands",loader.readMoleculesFromMol2,params="data/er_antagonist_ligands.mol2"),
-    5:Node("addActivityLigands",utils.addValue,params={"activity":1,"pIC":6},need=[3]),
+    13:Node("createMoleculesLigands",filters.createMolecules,need=[3]),
+    5:Node("addActivityLigands",utils.addValue,params={"activity":1,"pIC":6},need=[13]),
     4:Node("readMoleculesDecoys",loader.readMoleculesFromMol2,params="data/er_antagonist_decoys.mol2"),
-    6:Node("addActivityDecoys",utils.addValue,params={"activity":0,"pIC":0},need=[4]),
+    14:Node("createMoleculesDecoys",filters.createMolecules,need=[4]),
+    6:Node("addActivityDecoys",utils.addValue,params={"activity":0,"pIC":0},need=[14]),
     8:Node("concatLigandsDecoys",utils.concatenate,need=[5,6]),
+    
+    9:Node("concatLigandsDecoysChEMBL",utils.concatenate,need=[12,8]),
     100:Node("",lambda x:x)
              }
 def main():
-    nodenetwork[8].invalidate()
+    nodenetwork[2].invalidate()
     #chembl=loadMoleculesFromChEMBL("CHEMBL206")
     #filtrate=filterByActivity(chembl["bioactivities"])
     #print "filtrated"
     #exit()
-    arr1=processor.execute(nodenetwork, 5)
-    arr2=processor.execute(nodenetwork, 6)
-    arr=processor.execute(nodenetwork, 8)
-    print("len arr1="+str(len(arr1)))
-    print("len arr2="+str(len(arr2)))
+    #arr1=processor.execute(nodenetwork, 7)
+    #arr2=processor.execute(nodenetwork, 8)
+    arr=processor.execute(nodenetwork, 9)
+    #print("len arr1="+str(len(arr1)))
+    #print("len arr2="+str(len(arr2)))
     print("len arr="+str(len(arr)))
 main()
 

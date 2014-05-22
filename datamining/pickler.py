@@ -22,7 +22,7 @@ def load(url):
     try:
         fil=open(prefix+url+".txt","r")
         text=fil.read()
-        print(url+" loaded")
+        #print(url+" loaded")
         return pickle.loads(text)
     except:
         #print(url+" cannot be load")

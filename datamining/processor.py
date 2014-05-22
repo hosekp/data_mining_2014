@@ -9,7 +9,6 @@ import pickler
 checked=False
 
 def execute(network,final):
-    print ("executing node "+str(final))
     global checked
     if(not checked):
         checker(network,final)
@@ -23,7 +22,7 @@ def execute(network,final):
         oldarr1=execute(network,finode.need[0])
         oldarr2=execute(network,finode.need[1])
         arr=finode.do2(oldarr1,oldarr2)
-    
+    print ("executed node "+str(final))
     return arr;
         
 def checker(network,final,pos=0):
