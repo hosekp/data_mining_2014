@@ -1,7 +1,7 @@
-import rdkit.Chem as rd
-import numpy,scipy,math
-import sklearn as scikit
-import json
+#import rdkit.Chem as rd
+#import numpy,scipy,math
+#import sklearn as scikit
+#import json
 
 from datamining import *
 
@@ -28,27 +28,31 @@ nodenetwork={
     
     9:Node("concatLigandsDecoysChEMBL",utils.concatenate,need=[12,8]),
     15:Node("postCatCheckPoint",filters.checkPoint,need=[9],params=["RDMol","pIC","activity","id"]),
-    16:Node("fingerprints",processor.fingerPrints,need=[15],params={"fingerprint":"topological","radius":2}),
+    16:Node("fingerprints",processor.fingerPrints,need=[15],params={"fingerprint":"morgan","radius":2}),
     18:Node("prePickerSplit",utils.spitter,need=[16],params={"key":"activity","value":1}),
     17:Node("divPickerLigands",processor.DiversePicker,need=[18],needpos=[0],params={"size":30}),
     19:Node("divPickerDecoys",processor.DiversePicker,need=[18],needpos=[1],params={"size":30}),
     20:Node("postPickCat",utils.concatenate,need=[17,19]),
+    21:Node("Bayes",processor.naiveBayes,need=[20]),
     
     100:Node("",lambda x:x)
              }
 def main():
-    nodenetwork[18].invalidate()
+    nodenetwork[21].invalidate()
     #chembl=loadMoleculesFromChEMBL("CHEMBL206")
     #filtrate=filterByActivity(chembl["bioactivities"])
     #print "filtrated"
     #exit()
-    #arr1=processor.execute(nodenetwork, 7)
-    #arr2=processor.execute(nodenetwork, 8)
-    arr=executor.execute(nodenetwork, 20)
+    #arr1=executor.execute(nodenetwork, 17)
+    #arr2=executor.execute(nodenetwork, 19)
+    arr=executor.execute(nodenetwork, 21)
     #print("len arr1="+str(len(arr1)))
     #print("len arr2="+str(len(arr2)))
-    print("len arr="+str(len(arr)))
-    print([elem.activity for elem in arr])
+    #print("len arr="+str(len(arr)))
+    #print(utils.getPossibles([elem.fingerprint.GetLength() for elem in arr]))   
+    #print([elem.fingerprint.GetLength() for elem in arr])
+    #print(dir(arr[0].fingerprint))
+    #processor.naiveBayes([], {})
 main()
 
 

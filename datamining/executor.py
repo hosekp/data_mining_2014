@@ -12,6 +12,7 @@ def execute(network,final,pos=0):
     global checked
     if(not checked):
         checker(network,final)
+        checked=True
     finode=network[final]
     if(len(finode.need)==0):
         arr=finode.do([])
@@ -45,11 +46,11 @@ def checker(network,final,pos=0):
     else:
         if(len(finode.needpos)>0):
             valid=checker(network,finode.need[0],finode.needpos[0])
-            valid=valid and checker(network,finode.need[1],finode.needpos[1])
+            valid=checker(network,finode.need[1],finode.needpos[1]) and valid
         else:    
             valid=checker(network,finode.need[0])
-            valid=valid and checker(network,finode.need[1])
-    valid=valid and finode.check(pos)
+            valid=checker(network,finode.need[1]) and valid
+    valid=valid and finode.check()
     if(not valid):
         finode.invalidate()
     return valid
@@ -58,6 +59,7 @@ def checker(network,final,pos=0):
 class Node:
     name="generic"
     arr=None
+    arr2=None
     func=lambda x : x
     
     def __init__(self,name,func,need=[],needpos=[],params=None):
@@ -96,11 +98,11 @@ class Node:
             return self.arr2
     
     def invalidate(self):
+        global checked
+        checked=False
         self.arr=None
         self.arr2=None
-    def check(self,pos=0):
-        if(pos==0):
-            return self.arr!=None
-        else:
-            return self.arr2!=None
+        print(self.name+" invalidated")
+    def check(self):
+        return self.arr!=None
 

@@ -44,3 +44,14 @@ def spitter(arr,params):
             ret2.append(elem)
     return ret1,ret2
 #def map(array,func):
+def getPossibles(arr,key=None):
+    retarr=[]
+    if(isinstance(arr,list)):
+        for elem in arr:
+            if not elem in retarr:
+                retarr.append(elem);
+    elif(isinstance(arr,dict)):
+        for elem in arr:
+            if not elem[key] in retarr:
+                retarr.append(elem[key]);
+    return retarr

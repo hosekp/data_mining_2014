@@ -59,12 +59,6 @@ def filterKeys(arr,params):
         retarr.append(nelem)
     return retarr
             
-def getPossibles(arr,key):
-    retarr=[]
-    for line in arr:
-        if not line[key] in retarr:
-            retarr.append(line[key]);
-    return retarr
 def checkPoint(arr,params):
     retarr=[]
     for elem in arr:
