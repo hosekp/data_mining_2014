@@ -1,90 +1,46 @@
 '''
-Created on 21. 5. 2014
+Created on 23. 5. 2014
 
 @author: Ringael
 '''
+#import rdkit
+#from rdkit.Chem.Fingerprints import FingerprintMol as Topological 
+import rdkit.Chem.Fingerprints.FingerprintMols as Topological
+import rdkit.Chem.MACCSkeys as MACCS
+import rdkit.Chem.AtomPairs.Pairs as AtomPairs
+import rdkit.Chem.AtomPairs.Torsions as Torsions
+import rdkit.Chem.AllChem as Morgan
+import rdkit.DataStructs as DataStruct
+import rdkit.SimDivFilters.rdSimDivPickers as DivPickers
 
-import pickler
+def fingerPrints(arr,params):
+    def topological(rdmol,params):
+        return Topological.FingerprintMol(rdmol)
+    def maccs(rdmol,params):
+        return MACCS.GenMACCSKeys(rdmol)
+    def atompairs(rdmol,params):
+        return AtomPairs.GetAtomPairFingerprint(rdmol)
+    def torsions(rdmol,params):
+        return Torsions.GetTopologicalTorsionFingerprintAsIntVect(rdmol)
+    def morgan(rdmol,params):
+        return Morgan.GetMorganFingerprintAsBitVect(rdmol,params["radius"],useFeatures=True)
+    methods={"topological":topological,"maccs":maccs,"atompairs":atompairs,"torsions":torsions,"morgan":morgan}
+    
+    try:
+        for mol in arr:
+            mol.fingerprint=methods[params["fingerprint"]](mol.RDMol,params)
+    except KeyError:
+        print("Selected fingerprint not found")
+    return arr
 
-checked=False
-
-def execute(network,final):
-    global checked
-    if(not checked):
-        checker(network,final)
-    finode=network[final]
-    if(len(finode.need)==0):
-        arr=finode.do([])
-    elif(len(finode.need)==1):
-        oldarr=execute(network,finode.need[0])
-        arr=finode.do(oldarr)
-    else:
-        oldarr1=execute(network,finode.need[0])
-        oldarr2=execute(network,finode.need[1])
-        arr=finode.do2(oldarr1,oldarr2)
-    print ("executed node "+str(final))
-    return arr;
+def DiversePicker(arr,params):
+    def dist(i,j,arr=arr):
+        return 1-DataStruct.DiceSimilarity(arr[i].fingerprint, arr[j].fingerprint)
+    picker=DivPickers.MaxMinPicker()
+    picked=picker.LazyPick(dist,len(arr),params["size"])
+    return [arr[x] for x in picked]
         
-def checker(network,final,pos=0):
-    finode=network[final]
-    if(len(finode.need)==0):
-        valid=True
-    elif(len(finode.need)==1):
-        if(len(finode.needpos)>0 and finode.needpos[0]>0):
-            valid=checker(network,finode.need[0],finode.needpos[0])
-        else:
-            valid=checker(network,finode.need[0])
-    else:
-        if(len(finode.needpos)>0):
-            valid=checker(network,finode.need[0],finode.needpos[0])
-            valid=valid and checker(network,finode.need[1],finode.needpos[1])
-        else:    
-            valid=checker(network,finode.need[0])
-            valid=valid and checker(network,finode.need[1])
-    valid=valid and finode.check(pos)
-    if(not valid):
-        finode.invalidate()
-    return valid
 
-
-class Node:
-    name="generic"
-    arr=None
-    func=lambda x : x
+        
+        
     
-    def __init__(self,name,func,need=[],needpos=[],params=None):
-        self.name=name
-        self.func=func
-        self.need=need
-        self.needpos=needpos
-        self.params=params
-        self.arr=pickler.load(self.name)
-        self.arr2=pickler.load(self.name+"_2")
-    
-    def do(self,array):
-        if(self.arr==None):
-            self.arr=self.func(array,self.params)
-            if(isinstance(self.arr,tuple)):
-                self.arr2=self.arr[1]
-                self.arr=self.arr[0]
-                pickler.dump(self.name+"_2", self.arr2)
-            pickler.dump(self.name, self.arr)
-        return self.arr
-    def do2(self,array1,array2):
-        if(self.arr==None):
-            self.arr=self.func(array1,array2,self.params)
-            if(isinstance(self.arr,tuple)):
-                self.arr2=self.arr[1]
-                self.arr=self.arr[0]
-                pickler.dump(self.name+"_2", self.arr2)
-            pickler.dump(self.name, self.arr)
-        return self.arr
-    
-    def invalidate(self):
-        self.arr=None
-    def check(self,pos=0):
-        if(pos==0):
-            return self.arr!=None
-        else:
-            return self.arr2!=None
-

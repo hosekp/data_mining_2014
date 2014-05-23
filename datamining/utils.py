@@ -14,4 +14,33 @@ def addValue(arr,params):
         for elem in arr:
             elem[key]=value
     return arr
+def spitter(arr,params):
+    """
+        params={"key","value","comparator"="="}
+    """
+    ret1=[]
+    ret2=[]
+    def more(attr,value):
+        return attr>value
+    def less(attr,value):
+        return attr<value
+    def equa(attr,value):
+        return attr==value
+    comparator=equa
+    key=params["key"]
+    value=params["value"]
+    try:
+        comp=params["comparator"]
+        if comp==">":
+            comparator=more
+        if comp=="<":
+            comparator=less
+    except KeyError:
+        pass
+    for elem in arr:
+        if comparator(elem[key],value):
+            ret1.append(elem)
+        else:
+            ret2.append(elem)
+    return ret1,ret2
 #def map(array,func):

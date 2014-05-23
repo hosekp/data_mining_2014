@@ -65,3 +65,17 @@ def getPossibles(arr,key):
         if not line[key] in retarr:
             retarr.append(line[key]);
     return retarr
+def checkPoint(arr,params):
+    retarr=[]
+    for elem in arr:
+        valid=True
+        for key in params:
+            try:
+                elem[key]
+            except KeyError:
+                valid=False
+        if valid:
+            retarr.append(elem)
+        else:
+            print("CheckPoint: vyrazeno "+elem.id)
+    return retarr
