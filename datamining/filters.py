@@ -3,8 +3,9 @@ Created on 21. 5. 2014
 
 @author: Ringael
 '''
-import math
+import math,utils
 from molecule import Molecule
+import rdkit.DataStructs as DataStruct
 
 def filterByActivity(arr,params):
     retarr=[]
@@ -30,14 +31,14 @@ def filterByActivity(arr,params):
         if value > 1000:
             discard[4]+=1
             continue
-        mol=Molecule(line[u'parent_cmpd_chemblid'])
+        mol=Molecule(name=line[u'parent_cmpd_chemblid'])
 
         #mol.id=line[u'ingredient_cmpd_chemblid']
-        if(mol.id in mols):
+        if(mol.name in mols):
             discard[5]+=1
             continue
         else:
-            mols[mol.id]=True           
+            mols[mol.name]=True           
         mol.pIC=-math.log(value)
         retarr.append(mol)
         discard[6]+=1
@@ -53,7 +54,7 @@ def createMolecules(arr,params):
 def filterKeys(arr,params):
     retarr=[]
     for elem in arr:
-        nelem=Molecule(elem["id"])
+        nelem=Molecule(ID=elem["id"],name=elem["name"])
         for key in params:
             nelem[key]=elem[key]
         retarr.append(nelem)
@@ -71,5 +72,27 @@ def checkPoint(arr,params):
         if valid:
             retarr.append(elem)
         else:
-            print("CheckPoint: vyrazeno "+elem.id)
+            print("CheckPoint: vyrazeno "+elem.name)
     return retarr
+
+def DiceFilter(arr,sample,params):
+    treshold=utils.implicit(params,"limit",0.5)
+    def dist(i,j,tres=treshold):
+        return (1-DataStruct.DiceSimilarity(i.fingerprint, j.fingerprint)) < tres
+    ret=[]
+    ret2=[]
+    proc=utils.Procents(len(arr))
+    for elem in arr:
+        valid=False
+        for sam in sample:
+            if(dist(elem,sam)):
+                valid=True
+                break
+        if valid:
+            ret.append(elem)
+        else:
+            ret2.append(elem)
+        proc.next()
+    return ret,ret2
+            
+        

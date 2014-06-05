@@ -52,8 +52,8 @@ def getRDMolFromChEMBL(arr,params):
     for molec in arr:
         #retarr.append(molec.id)  # fallback
         #continue   #fallback
-        molec.smiles=getSmilesFromChEMBLFall(molec.id) # fallback
-        #molec.smiles=getSmilesFromChEMBL(molec.id)
+        molec.smiles=getSmilesFromChEMBLFall(molec.name) # fallback
+        #molec.smiles=getSmilesFromChEMBL(molec.name)
         molec.RDMol=rd.MolFromSmiles(molec.smiles)
         if(not molec.RDMol):
             #print(molec.id+" not converted")

@@ -6,3 +6,4 @@ from loader import *
 from filters import *
 from utils import *
 from processor import *
+from plotter import *

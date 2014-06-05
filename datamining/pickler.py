@@ -27,4 +27,9 @@ def load(url):
     except:
         #print(url+" cannot be load")
         return None
-
+def loadable(url):
+    try:
+        open(prefix+url+".txt","r")
+        return True
+    except:
+        return False

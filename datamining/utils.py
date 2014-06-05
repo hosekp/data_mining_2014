@@ -4,11 +4,45 @@ Created on 21. 5. 2014
 @author: Ringael
 '''
 
+import sys
+
+def implicit(params,key,impl):
+    try:
+        val=params[key]
+        return val
+    except KeyError:
+        return impl
+
+class Procents:
+    def __init__(self,maxlen,stride=5):
+        self.maxlen=maxlen
+        self.i=0
+        self.proc=0
+        self.stride=stride
+        print("Procent: "),
+    def next(self):
+        self.i+=1
+        while (self.i>=(self.proc+self.stride)/100.0*self.maxlen):
+            self.proc+=self.stride
+            #print("\b\b"),
+            if(self.proc>=100):
+                print(100)
+            else:
+                print(str(self.proc)),
+            #sys.stdout.write("Procent: "+str(self.proc)+"\r")
+            #sys.stdout.flush()
+            #print("Procent: "+str(self.proc)),
+        
 def foreach(array,func,arg1=None,arg2=None,arg3=None):
     for elem in array:
         func(elem,arg1,arg2,arg3)
-def concatenate(array,array2,params):
-    return array+array2
+def concatenate(arrs,params):
+    ret=[]
+    for arr in arrs:
+        if isinstance(arr,str):
+            continue
+        ret.extend(arr)
+    return ret 
 def addValue(arr,params):
     for key, value in params.items():
         for elem in arr:

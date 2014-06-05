@@ -20,32 +20,45 @@ nodenetwork={
     
     3:Node("readMoleculesLigands",loader.readMoleculesFromMol2,params="data/er_antagonist_ligands.mol2"),
     13:Node("createMoleculesLigands",filters.createMolecules,need=[3]),
-    5:Node("addActivityLigands",utils.addValue,params={"activity":1,"pIC":6},need=[13]),
+    5:Node("addActivityLigands",utils.addValue,params={"activity":1,"pIC":-6},need=[13]),
     4:Node("readMoleculesDecoys",loader.readMoleculesFromMol2,params="data/er_antagonist_decoys.mol2"),
     14:Node("createMoleculesDecoys",filters.createMolecules,need=[4]),
-    6:Node("addActivityDecoys",utils.addValue,params={"activity":0,"pIC":0},need=[14]),
+    6:Node("addActivityDecoys",utils.addValue,params={"activity":0,"pIC":6},need=[14]),
     8:Node("concatLigandsDecoys",utils.concatenate,need=[5,6]),
     
     9:Node("concatLigandsDecoysChEMBL",utils.concatenate,need=[12,8]),
     15:Node("postCatCheckPoint",filters.checkPoint,need=[9],params=["RDMol","pIC","activity","id"]),
     16:Node("fingerprints",processor.fingerPrints,need=[15],params={"fingerprint":"morgan","radius":2}),
     18:Node("prePickerSplit",utils.spitter,need=[16],params={"key":"activity","value":1}),
-    17:Node("divPickerLigands",processor.DiversePicker,need=[18],needpos=[0],params={"size":30}),
-    19:Node("divPickerDecoys",processor.DiversePicker,need=[18],needpos=[1],params={"size":30}),
+    17:Node("divPickerLigands",processor.DiversePicker,need=[18],needpos=[0],params={"size":300}),
+    19:Node("divPickerDecoys",processor.DiversePicker,need=[18],needpos=[1],params={"size":300}),
     20:Node("postPickCat",utils.concatenate,need=[17,19]),
-    21:Node("Bayes",processor.naiveBayes,need=[20]),
+    21:Node("nePickCat",utils.concatenate,need=[17,19],needpos=[1,1]),
+    #21:Node("Bayes",processor.naiveBayes,need=[20]),
+    28:Node("DiceFilter",filters.DiceFilter,need=[21,20],params={"limit":0.1}),
+    
+    22:Node("SVM_sample",processor.SupVecMach,need=[20],params={"C":0.6,"kernel":"linear"}),
+    23:Node("SVM_predict_sample",processor.SVMpredict,need=[20,22],needpos=[0,1]),
+    24:Node("SVM_predict_close",processor.SVMpredict,need=[28,22],needpos=[0,1]),
+    25:Node("SVM_predict_out",processor.SVMpredict,need=[28,22],needpos=[1,1]),
+    #24:Node("SVM_all",processor.SupVecMach,need=[18],needpos=[0],params={"C":1.0,"kernel":"linear"}),
+    26:Node("plot_sample",plotter.plot2D,need=[25,24,23],params={"X":"pIC","Y":"prediction","color":["r","g","b"]}),
+    
     
     100:Node("",lambda x:x)
              }
 def main():
-    nodenetwork[21].invalidate()
+    #invalidate(1,3,4)
+    invalidate(22)
+    #nodenetwork[3].invalidate()
+    #nodenetwork[4].invalidate()
     #chembl=loadMoleculesFromChEMBL("CHEMBL206")
     #filtrate=filterByActivity(chembl["bioactivities"])
     #print "filtrated"
     #exit()
     #arr1=executor.execute(nodenetwork, 17)
     #arr2=executor.execute(nodenetwork, 19)
-    arr=executor.execute(nodenetwork, 21)
+    arr=executor.execute(nodenetwork,26)
     #print("len arr1="+str(len(arr1)))
     #print("len arr2="+str(len(arr2)))
     #print("len arr="+str(len(arr)))
@@ -53,6 +66,15 @@ def main():
     #print([elem.fingerprint.GetLength() for elem in arr])
     #print(dir(arr[0].fingerprint))
     #processor.naiveBayes([], {})
+    
+    
+    
+    
+def invalidate(*arr):
+    for i in arr:
+        nodenetwork[i].invalidate()
 main()
+
+
 
 

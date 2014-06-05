@@ -13,12 +13,16 @@ class Molecule(object):
     smiles=False
     RDMol=False
     lastID=0
-    def __init__(self,ID=None):
+    def __init__(self,ID=None,name=None):
         if(ID==None):
             self.id=Molecule.lastID
             Molecule.lastID+=1
         else:
             self.id=ID
+        if(name==None):
+            self.name="Molecule "+str(self.id)
+        else:
+            self.name=name
     def out(self):
         ret = {}
         ret["smiles"]=self.smiles
