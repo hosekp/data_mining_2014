@@ -53,6 +53,7 @@ If you want to add new node type, you need to implement its inner function. New 
 - **Output**
 
   if more than one output is required, tuple with two elements can be used. Second element can be accessed by needpos parameter
+  
 ---
     
 ## Current Workflow
@@ -77,15 +78,15 @@ If you want to add new node type, you need to implement its inner function. New 
   molecules from ChEMBL and 39 antagonists and 1448 decoys from .mol2 files. Most of the rejected
   molecules were from ChEMBL database. There is table of reasons and counts of rejects.
   
-  | Reason        | Rejects       |
-  |:-------------:|:-------------:|
-  | not IC50      | 6159
-  | confidence < 7      | 3
-  | not nM | 946
-  | unparsable | 0
-  | &gt; 1 uM | 1067
-  | redundant | 331
-  | RDKit error | 16
+| Reason | Rejects
+|:-------------:|:-------------:
+| not IC50 | 6159
+| confidence &lt; 7 | 3
+| not nM | 946
+| unparsable | 0
+| &gt; 1 uM | 1067
+| redundant | 331
+| RDKit error | 16
   
   So at the end of loading procedure, there was 2361 molecules left.
   Six hundread molecules were chosen for model training, rest was divided by their closeness to sample
