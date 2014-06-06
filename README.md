@@ -11,10 +11,12 @@ This project was created as a fullfilment of a requirement for DataMining subjec
 - cPickle or pickle
 
 ## How to use
-  Most important part of program is main.py script. It contains of two parts:  
+  Most important part of program is main.py script. It contains of two parts:
 - list of Nodes
 - main function
+
   In Node list, there is description of whole program structure.
+
 ### Node
 Each node consists of its index, name, called function, dependencies and parameters
 - Index - it serves for dependency connections. Indices must be unique, but dont have to be ordered
@@ -23,6 +25,7 @@ Each node consists of its index, name, called function, dependencies and paramet
 - need - (optional), specify indices of nodes, from which data need to be loaded for processing
 - needpos - (optional), specify, which of two outputs should be used
 - params - (optional), list of parameters for inner function.
+
 __Example:__
 ```python
 	19:Node("divPickerDecoys",processor.DiversePicker,need=[18],needpos=[1],params={"size":300}),
@@ -34,19 +37,20 @@ __Example:__
 ```python
 execute(26,28)
 ```
-
+---
 ## New node types
   If you want to add new node type, you need to implement its inner function. New function should satisfy this requirements:
-  #### Location
+#### Location
   In datamining package
-  #### Input
+#### Input
   Accepts two arguments:
-  ###### Output from previous node
+###### Output from previous node
     if more than one dependency specified, outputs will be send a array of arrays, but first element will be "multiarray" string
-  ###### List of parameters
-  #### Return something
+###### List of parameters
+#### Return something
     if more than one output is required, tuple with two elements can be used  
     second element can be accessed by needpos parameter
+---
     
 ## Current Workflow
   It uses three inputs of molecules, from ChEMBL and from two .mol2 files.
@@ -85,6 +89,7 @@ execute(26,28)
   Distant molecules (red dots) are located entirely in cluster at pIC50 = 6 (arbitrary value for decoys
   molecules).
 ## Conclusion
+
     Process of loading molecules are relatively successful, but there are still space for improvements.
   Firstly, redundant molecules are being deleted instead averaging or choosing the best. Secondly,
   sixteeen molecules were removed because they could be loaded into RDKit format. That's problem of
