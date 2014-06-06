@@ -3,8 +3,9 @@ Created on 21. 5. 2014
 
 @author: Ringael
 '''
-import math,utils
-from molecule import Molecule
+import math
+from datamining import utils
+from workflow.molecule import Molecule
 import rdkit.DataStructs as DataStruct
 
 def filterByActivity(arr,params):
@@ -69,13 +70,14 @@ def checkPoint(arr,params):
                 elem[key]
             except KeyError:
                 valid=False
+                print("CheckPoint: vyrazeno "+elem.name+", reason: missing "+str(key))
         if valid:
             retarr.append(elem)
-        else:
-            print("CheckPoint: vyrazeno "+elem.name)
     return retarr
 
-def DiceFilter(arr,sample,params):
+def DiceFilter(arrs,params):
+    arr=arrs[1]
+    sample=arrs[2]
     treshold=utils.implicit(params,"limit",0.5)
     def dist(i,j,tres=treshold):
         return (1-DataStruct.DiceSimilarity(i.fingerprint, j.fingerprint)) < tres

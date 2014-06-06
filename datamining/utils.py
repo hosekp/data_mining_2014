@@ -4,7 +4,6 @@ Created on 21. 5. 2014
 @author: Ringael
 '''
 
-import sys
 
 def implicit(params,key,impl):
     try:

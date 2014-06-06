@@ -6,15 +6,12 @@ Created on 23. 5. 2014
 #import rdkit
 #from rdkit.Chem.Fingerprints import FingerprintMol as Topological 
 import rdkit.Chem as Chem
-import rdkit.Chem.AtomPairs.Pairs as AtomPairs
-import rdkit.Chem.AtomPairs.Torsions as Torsions
 import rdkit.Chem.AllChem as Morgan
 import rdkit.DataStructs as DataStruct
 import rdkit.SimDivFilters.rdSimDivPickers as DivPickers
 from  sklearn.naive_bayes import MultinomialNB as Bayes
-from sklearn import svm,datasets
-from utils import Procents,implicit
-import json
+from sklearn import svm
+from datamining.utils import Procents,implicit
 
 
 

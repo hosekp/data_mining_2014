@@ -5,7 +5,7 @@ Created on 4. 6. 2014
 '''
 
 import pylab as pl
-from utils import implicit
+from datamining.utils import implicit
 
 def plot2D(arr,params):
     Xattr=implicit(params,"X","id")
