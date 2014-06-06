@@ -3,7 +3,7 @@ Data mining project 2014
 
 This project was created as a fullfilment of a requirement for DataMining subject at ICT Prague.
 
-## Python Dependencies:
+#### Python Dependencies:
 - rdkit
 - sklearn
 - numpy
@@ -39,21 +39,25 @@ execute(26,28)
 ```
 ---
 ## New node types
-  If you want to add new node type, you need to implement its inner function. New function should satisfy this requirements:
-#### Location
-  In datamining package
-#### Input
+If you want to add new node type, you need to implement its inner function. New function should satisfy this requirements:
+- **Location**
+  - Preferably in datamining package
+- **Input**
+
   Accepts two arguments:
-###### Output from previous node
+    - *Output from previous node*
+    
     if more than one dependency specified, outputs will be send a array of arrays, but first element will be "multiarray" string
-###### List of parameters
-#### Return something
-    if more than one output is required, tuple with two elements can be used  
-    second element can be accessed by needpos parameter
+    - *List of parameters*
+
+- **Output**
+
+  if more than one output is required, tuple with two elements can be used. Second element can be accessed by needpos parameter
 ---
     
 ## Current Workflow
   It uses three inputs of molecules, from ChEMBL and from two .mol2 files.
+  
   ChEMBL input in this version isn't working properly because of a problem with urllib2 library,
   which prevent from connecting to ChEMBL webpage. That's why a workaround is implemented - all
   data are already downloaded in the form of JSON. Then all data are being filtered according 
@@ -72,43 +76,51 @@ execute(26,28)
   Relatively high number of molecules have been rejected in the workflow. At the start, we have 9396
   molecules from ChEMBL and 39 antagonists and 1448 decoys from .mol2 files. Most of the rejected
   molecules were from ChEMBL database. There is table of reasons and counts of rejects.
+  
   | Reason        | Rejects       |
   |:-------------:|:-------------:|
   | not IC50      | 6159
   | confidence < 7      | 3
   | not nM | 946
   | unparsable | 0
-  | > 1 uM | 1067
+  | &gt; 1 uM | 1067
   | redundant | 331
   | RDKit error | 16
+  
   So at the end of loading procedure, there was 2361 molecules left.
   Six hundread molecules were chosen for model training, rest was divided by their closeness to sample
   with relatively strict cut-off, 814 molecules were labeled too distant and only 947 molecules were
   similar to sample. But all molecules were ploted and plot is displayed here.
+  
   ![alt text](./data/graf.png "Graph of estimated pIC50 on actual pIC50")
+  
   Distant molecules (red dots) are located entirely in cluster at pIC50 = 6 (arbitrary value for decoys
   molecules).
+  
 ## Conclusion
 
-    Process of loading molecules are relatively successful, but there are still space for improvements.
-  Firstly, redundant molecules are being deleted instead averaging or choosing the best. Secondly,
-  sixteeen molecules were removed because they could be loaded into RDKit format. That's problem of
-  RDKit, not of the molecules (but they, for example, contains borane spheres with 6-valence carbon).
-    Assigning of pIC50 values to .mol2 molecules is a little bit controverial, but neccesary (otherwise
-  we have to delete these molecules).
-    SVM used for model generation have been run with C = 0.6. This value should be optimized, because
-  overfitting and underfitting can occur with wrong value of C parameter, but I have not done this
-  optimalization. Also, different kernel can improve model.
-    Selection of distant molecules is also controled with not optimized theshold parameter, but current
-  value is chosen relatively well.
-    Purpose of this project is to create python program for activity recursion. I have focused on formal
-  side of the problem, so there wasn't enough time for model optimalization. But with such robust
-  construction of the program, applications on different problems can be done with ease (lot of useful
-  nodes are already implemented and easily controled through parameters).
+Process of loading molecules are relatively successful, but there are still space for improvements.
+Firstly, redundant molecules are being deleted instead averaging or choosing the best. Secondly,
+sixteeen molecules were removed because they could be loaded into RDKit format. That's problem of
+RDKit, not of the molecules (but they, for example, contains borane spheres with 6-valence carbon).
+Assigning of pIC50 values to .mol2 molecules is a little bit controverial, but neccesary (otherwise
+we have to delete these molecules).
+
+SVM used for model generation have been run with C = 0.6. This value should be optimized, because
+overfitting and underfitting can occur with wrong value of C parameter, but I have not done this
+optimalization. Also, different kernel can improve model.
+
+Selection of distant molecules is also controled with not optimized theshold parameter, but current
+value is chosen relatively well.
+
+Purpose of this project is to create python program for activity recursion. I have focused on formal
+side of the problem, so there wasn't enough time for model optimalization. But with such robust
+construction of the program, applications on different problems can be done with ease (lot of useful
+nodes are already implemented and easily controled through parameters).
   
-  So I hope, that you would like this program
+So I hope, that you would like this program
   
-  Petr Hošek     
+Petr Hošek     
   
   
 
